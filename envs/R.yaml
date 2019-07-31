@@ -1,0 +1,8 @@
+name: Toolsbioinfo
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - r-base
+  - r-caret
+  - r-randomforest

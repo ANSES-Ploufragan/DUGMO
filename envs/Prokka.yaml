@@ -1,0 +1,7 @@
+name: Prokka
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - prokka=1.13.7
+

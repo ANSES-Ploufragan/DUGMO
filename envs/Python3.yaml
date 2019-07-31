@@ -1,0 +1,12 @@
+name: Python3
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.6
+  - numpy=1.16.2
+  - pandas=0.21.0
+  - pyahocorasick=1.4.0
+  - scikit-learn=0.20.3
+  - scipy=1.2.1 
