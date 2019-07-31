@@ -22,8 +22,8 @@ snakemake -rp --use-conda
 
 Params name | Description
 ------------|------------
-`R1 :` | Input file Read 1 in fq.gz format
-`R2 :` | Input file Read 2 in fq.gz format
+`R1 ` | Input file Read 1 in fq.gz format
+`R2 ` | Input file Read 2 in fq.gz format
 `RefGenome` | Input file with 
 `PangenomeCDS` | Input file with 
 `PangenomeWhole` | Input file with 
