@@ -23,7 +23,7 @@ Launch the snakemake workflow
 ```
 snakemake -rp --use-conda
 ```
-## Params in config.json
+## Params in configDUGMO.json
 
 Params name | Description
 ------------|------------
