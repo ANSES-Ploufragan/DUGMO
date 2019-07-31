@@ -1,5 +1,5 @@
 # DUGMO
-Detection of unknown genetically modified organisms
+Detection of Unknown Genetically Modified Organisms
 
 ## Introduction
 
