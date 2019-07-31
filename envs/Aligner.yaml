@@ -1,0 +1,9 @@
+name: Aligner
+channels:
+  - bioconda
+  - defaults
+dependencies:
+  - bowtie2=2.3.5
+  - bwa=0.7.17
+  - blast=2.9.0
+  - samtools=1.9
