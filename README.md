@@ -18,7 +18,7 @@ conda activate DUGMO
 ```
 ## Quick start
 
-Launch the pipeline snakemake
+Launch the snakemake workflow
 ```
 snakemake -rp --use-conda
 ```
