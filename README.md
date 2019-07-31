@@ -10,6 +10,7 @@ DUGMO is a bioinformatics pipeline for the detection of unknown GMO based on pai
 Git glone
 ```
 git clone https://github.com/jhurel/DUGMO.git yourfolder
+cd your folder
 ```
 Create a conda environnement 
 ```
