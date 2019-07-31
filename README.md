@@ -18,4 +18,25 @@ Launch the pipeline snakemake
 ```
 snakemake -rp --use-conda
 ```
-## Paramet
+## Params in config.json
+
+Params name | Description
+------------|------------
+`R1 :` | Input file Read 1 in fq.gz format
+`R2 :` | Input file Read 2 in fq.gz format
+`RefGenome` | Input file with 
+`PangenomeCDS` | Input file with 
+`PangenomeWhole` | Input file with 
+`outputFolder` | Output folder for all results
+`threads` | Number of threads to use (default: 10)
+
+## Output files
+
+Foldername | Description
+-----------|------------
+`Cleaning_pipeline` | Cleaning pipeline with Shovill, Trimmomatic, BWA, Bowtie2, Blast and Prokka
+`HostGenome` | Host genome files
+`GMO` | GMO potential files
+`TrainingGMO` | Databank files
+`MachineLearning` | Results at the final step
+
