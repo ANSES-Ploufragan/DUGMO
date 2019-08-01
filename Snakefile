@@ -341,6 +341,8 @@ rule MEF_Entete_CDS:
      "{sample}-Entete.txt",
      "{sample}-Entetepos3codon.txt",
      "{sample}-pos3codon.fa"
+  conda:
+    "envs/Python3.yaml"
   script:
      "scripts/formating_SEQpos3codon.py"
 
@@ -364,6 +366,8 @@ rule calcul_distance_words_Propv4:
     config["outputFolder"] + "/Rmes/freq_CDS_GMO_host_l{tailleMot}_m{MarkovOrder}_{pourcentSurRep}pSurRep.txt"
   output:
     "{sample}_l{tailleMot}_m{MarkovOrder}_{pourcentSurRep}pSurRep_calculdistBCPropv4-Length.csv"
+  conda:
+    "envs/Python3.yaml"
   script:
     "scripts/dist_calculationBC_proportions.py"
 
