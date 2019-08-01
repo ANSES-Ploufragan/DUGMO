@@ -19,7 +19,7 @@
 	"tailleMotFreq" : "9",
 	"MarkovOrderFreq" : "7"
     },
-    "outputFolder" : "/Results_GMO_Bsubtilis",
+    "outputFolder" : "Results_GMO_Bsubtilis",
     "oligo" : "oligo/all_illumina_NexteraXT_Truseq_and_NEB.fw_revcomp_v2_20170418_with_phiX174.fa",
     "databankGMO" : "databank/183_inserts_bact_and_JRCMaurodb",
     "threads": "10"
