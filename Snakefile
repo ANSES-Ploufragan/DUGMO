@@ -30,11 +30,10 @@ rule trimmomatic_GMO:
   conda:
     "envs/Shovill.yaml"
   params:
-    logfile=config["outputFolder"] + "/GMO/logFile_trimmomatic.log",
     oligofile=config["oligo"],
     threads=config["threads"]
   shell:
-    "trimmomatic PE -threads {params.threads} -trimlog {params.logfile} {input[0]} {input[1]} {output.R1trim} {output.R1trim_unpaired} {output.R2trim} {output.R2trim_unpaired} ILLUMINACLIP:{params.oligofile}:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:36"
+    "trimmomatic PE -threads {params.threads} {input[0]} {input[1]} {output.R1trim} {output.R1trim_unpaired} {output.R2trim} {output.R2trim_unpaired} ILLUMINACLIP:{params.oligofile}:2:30:10:2:keepBothReads LEADING:3 TRAILING:3 MINLEN:36"
 
 rule Alignment_Bowtie2_indexGenomeRef_GMO:
   input:
@@ -137,7 +136,7 @@ rule Consensus_Alignment:
     rules.Alignment_BWA_indexAnnotationProkka_unalignedGenomeRefGMO.output.sortedBamBWA2,
     rules.Concat_ProkkaAnnot_plasmid.output.AnnotFusionU
   output:
-    Consensus_fq=temp(config["outputFolder"] + "data/Cleaning_pipeline/Alignment_BWA_AnnotationGMO_unalignedGenomeRefGMOBWA/final_permissive.fastq"),
+    Consensus_fq=temp(config["outputFolder"] + "/Cleaning_pipeline/Alignment_BWA_AnnotationGMO_unalignedGenomeRefGMOBWA/final_permissive.fastq"),
     Consensus_fa=config["outputFolder"] + "/Cleaning_pipeline/Alignment_BWA_AnnotationGMO_unalignedGenomeRefGMOBWA/final_permissive.fasta",
     ET1=temp(config["outputFolder"] + "/Cleaning_pipeline/Alignment_BWA_AnnotationGMO_unalignedGenomeRefGMOBWA/consensus_Alignment_entete1.txt"),
     ET=config["outputFolder"] + "/Cleaning_pipeline/Alignment_BWA_AnnotationGMO_unalignedGenomeRefGMOBWA/consensus_Alignment_entete.txt"
