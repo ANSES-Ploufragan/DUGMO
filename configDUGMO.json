@@ -1,7 +1,7 @@
 {
     "Reads": {
-	"R1" : "testdata/Genome_rep1_read1.fastq.gz",
-	"R2" : "testdata/Genome_rep1_read2.fastq.gz"
+	"R1" : "testdata/SRR8935610_1.fastq.gz",
+	"R2" : "testdata/SRR8935610_2.fastq.gz"
     },
     "Strain": {
 	"RefGenome" : "testdata/Bacillus_subtilis_NC_000964.3_str.168.fa",
