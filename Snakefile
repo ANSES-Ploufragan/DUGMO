@@ -315,8 +315,8 @@ rule Rmes_calcul_format_allWildCDS:
     taillemot="{RtailleMot}",
     markov="{RMarkovOrder}"
   shell: """
-    rmes --gauss -o {params.name} -l {params.taillemot} -m {params.markov} --seq {input.WildCDS}  #./scripts/src/
-    rmes.format -l {params.taillemot} --tmax 0.0 --tmin 0.0 < {output.Rmes1} > {output.Rmes2} 
+    ./scripts/src/rmes --gauss -o {params.name} -l {params.taillemot} -m {params.markov} --seq {input.WildCDS}  
+    ./scripts/src/rmes.format -l {params.taillemot} --tmax 0.0 --tmin 0.0 < {output.Rmes1} > {output.Rmes2} 
     head -n -2 {output.Rmes2} | sed -e '1,6d' -e '8d' -e '/\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\.\./d' > {output.Rmes3}
     """
 rule frequence_HostGenome:
