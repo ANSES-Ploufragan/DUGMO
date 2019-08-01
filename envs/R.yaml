@@ -6,3 +6,4 @@ dependencies:
   - r-base
   - r-caret
   - r-randomforest
+  - r-e1071
