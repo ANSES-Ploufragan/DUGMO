@@ -1,4 +1,4 @@
-ML <- function(cds, gmo, t25, PredRFPos, PredRFProba) {
+ML <- function(cds, gmo, t25, PredRFPos, PredRFProba, PredRLPos, PredRLProba) {
 
 # Import learning data
 cds <- read.csv(cds, fill = FALSE, header = TRUE, sep = ",", row.names = 1)
@@ -31,9 +31,18 @@ pred.rf <- predict(mod.rf, Data.new, "prob")
 res <- as.data.frame(pred.rf)
 res.rf <- data.frame(Data.new, res)
 new.res.rf <- res.rf[ which(res.rf$X1 > 0.50), ]
-write.table(new.res.rf, file=PredRFPos, sep=',')
-write.table(res.rf, file=PredRFProba, sep=',')
+write.table(new.res.rf, file=PredRFPos, sep=",")
+write.table(res.rf, file=PredRFProba, sep=",")
+
+# Create model with learning data + prediction using régression logistique
+mod.reglog <- train(OGM ~., data=Data, method='glm', family = binomial, preProcess = c("center", "scale"), tuneLength = 6)
+pred.reglog <- predict(mod.reglog, Data.new, "prob")
+res <- as.data.frame(pred.reglog)
+res.reglog <- data.frame(Data.new, res)
+new.res.reglog <- res.reglog[ which(res.reglog$X1 > 0.50), ]
+write.table(new.res.reglog, file=PredRLPos, sep=",")
+write.table(res.reglog, file=PredRLProba, sep=",")
 
 }
 
-ML(snakemake@input[[1]], snakemake@input[[2]], snakemake@input[[3]], snakemake@output[[1]], snakemake@output[[2]])
+ML(snakemake@input[[1]], snakemake@input[[2]], snakemake@input[[3]], snakemake@output[[1]], snakemake@output[[2]], snakemake@output[[3]], snakemake@output[[4]])
