@@ -14,7 +14,7 @@ rule target:
         	sample=[config["outputFolder"] + "/DatabankGMO/GMO_Databank_clean", config["outputFolder"] + "/HostGenome/CDS_GMO_host", config["outputFolder"] + "/GMO/CDS_GMO_Inserts"]),
      expand("{inp}_mixl4m2Propv4l9m7Freq_calculdistBC-CodonUsage_notRNA.csv", 
 		inp=[config["outputFolder"] + "/HostGenome/CDS_GMO_host", config["outputFolder"] + "/DatabankGMO/GMO_Databank_clean"]),
-     config["outputFolder"] + "/MachineLearning/Pred-RFPositifs-all.txt"
+     config["outputFolder"] + "/MachineLearning/CDSGMO.txt"
 
 ############################### CLEANING PIPELINE
 
@@ -165,42 +165,49 @@ rule CDS_host_and_CDS_GMOInserts_beforeBlastPangenome:
     """
 
 ############################### BLASTN PANGENOME CDS AND PANGENOME WHOLE GENOME
-
 #First Blast
-rule Align_PangenomeCDSdb_GMO:
+rule Remove_DuplicateSeq_PangenomeCDS:
   input:
     config["Strain"]["PangenomeCDS"],
+  output:
+    PanCDS=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/Pangenome_CDS_uniq.fa"
+  script:
+    "scripts/removeDuplicateSeq.py"
+
+rule Align_PangenomeCDSdb_GMO:
+  input:
+    rules.Remove_DuplicateSeq_PangenomeCDS.output.PanCDS,
     rules.CDS_host_and_CDS_GMOInserts_beforeBlastPangenome.output.CDS_GMOInserts
   output:
-    BlastdbRes=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_percIden95_gapopen3_qcovhsp98.tsv",
-    BlastdbR=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_cut.txt"
+    BlastdbRes=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_percIden95_gapopen3_gapextend1.tsv",
+    BlastdbR=temp(config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_cut.txt")
   conda:
     "envs/Aligner.yaml"
   params:
-    name=config["Strain"]["PangenomeCDS"] + ".db",
+    name=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/Pangenome_CDS_uniq.db",
     evalue=0.00001,
     percidentity=95,
     threads=config["threads"]
   shell: """
     makeblastdb -in {input[0]} -out {params.name} -dbtype nucl
-    blastn -query {input[1]} -db {params.name} -evalue {params.evalue} -perc_identity {params.percidentity} -qcov_hsp_perc 98 -num_threads {params.threads} -gapopen 3 -gapextend 1 -outfmt '6 qseqid sseqid pident length sstart send evalue sstrand qlen slen qcovs gaps qcovhsp' > {output[0]} 
-    cut -d$'\t' -f 1,2,4,9 {output[0]} > {output[1]}
+    blastn -query {input[1]} -db {params.name} -evalue {params.evalue} -perc_identity {params.percidentity} -num_threads {params.threads} -gapopen 3 -gapextend 1 -outfmt '6 qseqid sseqid pident length sstart send evalue sstrand qlen slen qcovs gaps qcovhsp' > {output[0]} 
+    cut -d$'\t' -f 1,2,3,4,9,10,13 {output[0]} > {output[1]}
     """
 
 rule Clean_Blast_PangenomeCDS:
   input:
     rules.Align_PangenomeCDSdb_GMO.output.BlastdbR
   output:
-    CB=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_Clean.txt"
+    CB=temp(config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_Clean.txt")
   script:
-    "scripts/Blast_AlignLength.py"
+    "scripts/BlastCDS_AlignLength.py"
     
 rule PangenomeCDSdb_CDS_host_and_CDS_GMOInserts:
   input:
     rules.Clean_Blast_PangenomeCDS.output.CB,
     rules.CDS_host_and_CDS_GMOInserts_beforeBlastPangenome.output.CDS_GMOInserts
   output:
-    Entete1=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_percIden95_gapopen3_qcovhsp98_EnteteUniq.txt", #temp?
+    Entete1=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_VS_PangenomeCDSdb_percIden95_gapopen3_gapextend1_EnteteUniq.txt", 
     CDS_GMOpot1=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_potentialinserts_afterBlastPangenomeCDS.fa",
     CDS_host1=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_CDS/CDS_GMO_host_afterBlastPangenomeCDS.fa"
   conda:
@@ -212,40 +219,48 @@ rule PangenomeCDSdb_CDS_host_and_CDS_GMOInserts:
     """
 
 #Second Blast
-rule Align_PangenomeWholedb_GMO:
+rule Remove_DuplicateSeq_PangenomeWhole:
   input:
     config["Strain"]["PangenomeWhole"],
+  output:
+    PanWhole=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/Pangenome_Whole_uniq.fa"
+  script:
+    "scripts/removeDuplicateSeq.py"
+
+rule Align_PangenomeWholedb_GMO:
+  input:
+    rules.Remove_DuplicateSeq_PangenomeWhole.output.PanWhole,
     rules.PangenomeCDSdb_CDS_host_and_CDS_GMOInserts.output.CDS_GMOpot1
   output:
-    BlastdbRes2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_percIden95_gapopen3_qcovhsp98.tsv",
-    BlastdbR2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_cut.txt"
+    BlastdbRes2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_percIden95_gapopen3_gapextend1.tsv",
+    BlastdbR2=temp(config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_cut.txt")
   conda:
     "envs/Aligner.yaml"
   params:
-    name=config["Strain"]["PangenomeWhole"] + ".db",
+    name=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/Pangenome_Whole_uniq.db",
     evalue=0.00001,
     percidentity=95,
     threads=config["threads"]
   shell: """
     makeblastdb -in {input[0]} -out {params.name} -dbtype nucl
     blastn -query {input[1]} -db {params.name} -evalue {params.evalue} -perc_identity {params.percidentity} -qcov_hsp_perc 98 -num_threads {params.threads} -gapopen 3 -gapextend 1 -outfmt '6 qseqid sseqid pident length sstart send evalue sstrand qlen slen qcovs gaps qcovhsp' > {output[0]} 
-    cut -d$'\t' -f 1,2,4,9 {output[0]} > {output[1]}
+    cut -d$'\t' -f 1,2,3,4,9,10,13 {output[0]} > {output[1]}
     """
 
 rule Clean_Blast_PangenomeWhole:
   input:
     rules.Align_PangenomeWholedb_GMO.output.BlastdbR2
   output:
-    CB2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_Clean.txt"
+    CB2=temp(config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_Clean.txt")
   script:
-    "scripts/Blast_AlignLength.py"
+    "scripts/BlastWhole_AlignLength.py"
 
 rule PangenomeWholedb_CDS_host_and_CDS_GMOInserts:
   input:
     rules.Clean_Blast_PangenomeWhole.output.CB2,
     rules.PangenomeCDSdb_CDS_host_and_CDS_GMOInserts.output.CDS_GMOpot1
   output:
-    Entete2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_percIden95_gapopen3_qcovhsp98_EnteteUniq.txt",
+    Entete2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/CDS_GMO_potentialinserts_VS_Pangenomewholedb_percIden95_gapopen3_gapextend1_EnteteUniq.txt",
     CDS_GMOpot2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/AfterBlastPangenomewholegenome_unalignedSeq_CDS_GMOinserts.fa",
     CDS_host2=config["outputFolder"] + "/Cleaning_pipeline/Blast_Pangenome_wholegenome/AfterBlastPangenomewholegenome_alignedSeq_CDS_host.fa"
   conda:
@@ -401,7 +416,7 @@ rule Suppression_tRNA:
   shell: 
     "egrep -v -i 'tRNA-|tRNA ligase|[0-9]S ribosomal' {input} > {output}"
     
-rule ML_RandomForest:
+rule ML_RandomForest_Reglog:
   input:
     config["outputFolder"] + "/HostGenome/CDS_GMO_host_mixl4m2Propv4l9m7Freq_calculdistBC-CodonUsage_notRNA.csv",
     config["outputFolder"] + "/DatabankGMO/GMO_Databank_clean_mixl4m2Propv4l9m7Freq_calculdistBC-CodonUsage_notRNA.csv",
@@ -409,8 +424,19 @@ rule ML_RandomForest:
   conda:
     "envs/R.yaml"
   output:
-    config["outputFolder"] + "/MachineLearning/Pred-RFPositifs-all.txt",
-    config["outputFolder"] + "/MachineLearning/Pred-RFProba-all.txt"
+    RFPos=config["outputFolder"] + "/MachineLearning/Pred-RFPositifs-all.txt",
+    RFProba=config["outputFolder"] + "/MachineLearning/Pred-RFProba-all.txt",
+    ReglogPos=config["outputFolder"] + "/MachineLearning/Pred-ReglogPositifs-all.txt",
+    ReglogProba=config["outputFolder"] + "/MachineLearning/Pred-ReglogProba-all.txt"
   script:
-    "scripts/ML_PredictionGMO-RF.R"
+    "scripts/ML_PredictionGMO-RF-reglog.R"
     
+rule cat_results_ML:
+  input:
+    rules.ML_RandomForest_Reglog.output.RFPos,
+    rules.ML_RandomForest_Reglog.output.ReglogPos
+  output:
+    config["outputFolder"] + "/MachineLearning/CDSGMO.txt"
+  shell: 
+    "cat {input[0]} {input[1]} | cut -d$',' -f 1-9 | sort -u > {output[0]}"
+
