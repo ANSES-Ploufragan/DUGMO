@@ -73,7 +73,7 @@ def calcul_dist_prop(MEFfile, EnteteFile, freqGRFile, distFile):
 		if sumcomptageCDScible == 0:
 			BC = 1.0
 		else :
-			comptagetrouve = comptageall.query('found_keywords != 0')	
+			comptagetrouve = comptageall
 			sumcomptageCSDglobal = sum(comptagetrouve['count'])	
 			proportion = comptagetrouve['found_keywords'].apply(lambda x: x*sumcomptageCSDglobal/sumcomptageCDScible)
 			proportionall = np.transpose(pd.concat([proportion, comptagetrouve['count']], axis=1))
