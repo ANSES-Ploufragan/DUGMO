@@ -27,11 +27,11 @@ snakemake -rp --use-conda
 
 Params name | Description
 ------------|------------
-`R1 ` | Input file Read 1 in fq.gz format
-`R2 ` | Input file Read 2 in fq.gz format
+`R1 ` | Input file Read 1 in fq or fq.gz format
+`R2 ` | Input file Read 2 in fq or fq.gz format
 `RefGenome` | Input file of reference genome in fasta format
-`PangenomeCDS` | Input file of pangenome CDS in fasta format
-`PangenomeWhole` | Input file of pangenome whole genome in fasta format
+`PangenomeCDS` | Input file of pangenome CDS in .fa.gz format
+`PangenomeWhole` | Input file of pangenome whole genome in .fa.gz format
 `outputFolder` | path of output folder for all results
 `threads` | Number of threads to use (default: 10)
 
@@ -40,8 +40,8 @@ Params name | Description
 Foldername | Description
 -----------|------------
 `Cleaning_pipeline` | Cleaning pipeline with Shovill, Trimmomatic, BWA, Bowtie2, Blast and Prokka
-`HostGenome` | Host genome files
+`DataBankGMO` | Databank files
 `GMO` | GMO potential files
-`TrainingGMO` | Databank files
+`HostGenome` | Host genome files
 `MachineLearning` | Results at the final step
 `Rmes` | Rmes output files
