@@ -22,7 +22,9 @@ def DeleteSeqGMOAlignGenomRef (GMOdb, BlastAlignFile, Output):
 	else :
 		#Traitement 
 		BlastAlign = pd.read_csv(BlastAlignFile, sep="\t", header=None)
-		BlastAlign.columns = ['qseqid', 'sseqid', 'pident', 'length', 'sstart', 'send', 'evalue', 'sstrand'] 
+		BlastAlign.columns = ['qseqid', 'sseqid', 'pident', 'length', 'sstart', 'send', 'evalue', 'sstrand', 'qlen', 'slen', 'qcovs', 'gaps', 'qcovhsp'] 
+		#Blast params like Blast GMO VS Pangenome
+		BlastAlign = BlastAlign[(BlastAlign['pident']>=98) | (BlastAlign['qcovhsp']>=98)]
 		#Deletion of lines containing the same positions with respect to a given GMOdb sequence ID
 		alignTable = BlastAlign.sort_values(by='sseqid').drop_duplicates(subset=['sseqid', 'sstart', 'send'], keep='first')
 		DeleteSeqNameCount = alignTable['sseqid'].value_counts()
@@ -94,6 +96,13 @@ def DeleteSeqGMOAlignGenomRef (GMOdb, BlastAlignFile, Output):
 				sequence = Seq[idx][trouve.start():len(Seq[idx])]
 				#Deletion of all alignments with their corresponding positions for a given sequence
 				for k in range (0, len(MultiPosDelete)):
+					#Check the length to delete is a multiple of 3 (codons)
+					mod = ((int(MultiPosDelete.iloc[k,2]) - int(MultiPosDelete.iloc[k,1]))+1)%3
+					if mod == 2:
+						MultiPosDelete.iloc[k,2] = int(MultiPosDelete.iloc[k,2]) + 1
+					if mod == 1:	
+						MultiPosDelete.iloc[k,2] = int(MultiPosDelete.iloc[k,2]) + 2
+					#Deletion of all alignments with their corresponding positions for a given sequence
 					if int(MultiPosDelete.iloc[k,1]) == 1 :					
 						seqNew = sequence[int(MultiPosDelete.iloc[k,2]):len(Seq[idx])]
 					else :
