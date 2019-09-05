@@ -3,7 +3,7 @@ Detection of Unknown Genetically Modified Organisms
 
 ## Introduction
 
-DUGMO is a bioinformatics pipeline for the detection of unknown GMO based on paired end data from Illumina sequencing. This tool performs a cleaning of high throughput sequencing data to identify coding sequences (CDS) belonging to the wild genome from potential GMO coding sequences (pgmCDS). These CDS are aligned in two successive blasts against the host pangenome with relevant tuned parameters. Then, Bray-Curtis distances are calculated between the CDSs and the pgmCDSs based on the difference of genomic vocabulary between these two sets. Finally, a machine learning method, random forest, is carried out to target true GMO CDS(s) with six different variables among which Bray-Curtis distances and GC content.
+DUGMO is a bioinformatics pipeline for the detection of GMOs, including unknown GMOs, based on Illumina paired-end sequencing data. In first steps, coding sequences (CDS) are aligned through two successive BLASTN against the host pangenome with relevant tuned parameters to discriminate CDSs belonging to the wild genome (wgCDS) from potential GMO coding sequences (pgmCDS). Then, Bray-Curtis distances are calculated between the wgCDSs and the pgmCDSs based on the difference of genomic vocabulary between these two sets. Finally, two machine learning methods, namely random forest and generalized linear model, are carried out to target true GMO CDS(s). 
 
 ## Installation with conda 
 
@@ -17,12 +17,7 @@ Create a conda environnement
 conda create -n DUGMO snakemake
 conda activate DUGMO
 ```
-## Quick start
 
-Launch the snakemake workflow
-```
-snakemake -rp --use-conda
-```
 ## Params in configDUGMO.json
 
 Params name | Description
@@ -34,6 +29,13 @@ Params name | Description
 `PangenomeWhole` | Input file of pangenome whole genome in .fa.gz format
 `outputFolder` | path of output folder for all results
 `threads` | Number of threads to use (default: 10)
+
+## Quick start
+
+Launch the snakemake workflow
+```
+snakemake -rpk --use-conda
+```
 
 ## Output files
 
