@@ -1,12 +1,12 @@
 {
     "Reads": {
-	"R1" : "testdata/SRR8935610_1.fastq.gz",
-	"R2" : "testdata/SRR8935610_2.fastq.gz"
+	"R1" : "Bsubtilis-LGL/Genome_rep1_read1.fastq.gz",
+	"R2" : "Bsubtilis-LGL/Genome_rep1_read2.fastq.gz"
     },
     "Strain": {
 	"RefGenome" : "testdata/Bacillus_subtilis_NC_000964.3_str.168.fa",
-	"PangenomeCDS" : "testdata/36_strains_Bacillus_Subtilis_CDS_uniq.fa",
-	"PangenomeWhole" : "testdata/36_strains_Bacillus_Subtilis_whole_genome.fa"
+	"PangenomeCDS" : "testdata/37_strains_Bacillus_Subtilis_CDS.fa.gz",
+	"PangenomeWhole" : "testdata/37_strains_Bacillus_Subtilis_whole_genome.fa.gz"
     },
     "FrequenceParams": {
 	"pourcentSurRepProp" : "100",
@@ -19,7 +19,9 @@
 	"tailleMotFreq" : "9",
 	"MarkovOrderFreq" : "7"
     },
-    "outputFolder" : "Results_GMO_Bsubtilis",
+    "genus" : "Bacillus",
+    "species" : "subtilis",
+    "outputFolder" : "Results_GM_Bsubtilis",
     "oligo" : "oligo/all_illumina_NexteraXT_Truseq_and_NEB.fw_revcomp_v2_20170418_with_phiX174.fa",
     "databankGMO" : "databank/183_inserts_bact_and_JRCMaurodb",
     "threads": "10"
