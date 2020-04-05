@@ -8,6 +8,9 @@ Filtre_GMODatabank <- function (host, gmoDB, gmoDB_Output) {
 	Medl9m7 <- median(CDShost[,7], na.rm = FALSE)
 
 	NewGmoDatabank <- subset(CDSgmoDB, BrayCurtis_l4_m2Prop > Medl4m2 | CodonUsage > Medl3m1 | BrayCurtis_l9_m7Freq > Medl9m7)
+	 if (dim(NewGmoDatabank)[1] == 0) {
+                NewGmoDatabank <- CDSgmoDB
+        }
 	write.table(NewGmoDatabank, file=gmoDB_Output, sep=",", quote=FALSE)
 }
 
